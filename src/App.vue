@@ -1,26 +1,65 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <v-app>
+    <v-app-bar 
+      :elevation="2"
+      rounded
+      color="#7fffd4"
+    >
+      <template v-slot:prepend>
+        <v-app-bar-nav-icon></v-app-bar-nav-icon>
+      </template>
+
+      <v-app-bar-tittle class="navbar-title">Monster Api</v-app-bar-tittle>
+    </v-app-bar>
+
+    <v-main>
+      <v-tabs v-model="tab" color="basil" grow>
+        <v-tab value="Pokemon">
+          Pokemon Api
+        </v-tab>
+        <v-tab value="Digimon">
+          Digimon Api
+        </v-tab>
+      </v-tabs>
+
+      <v-divider></v-divider>
+      
+      <v-tabs-window v-model="tab">
+        <v-tabs-window-item value="Pokemon">
+          <!---->
+        </v-tabs-window-item>
+        <v-tabs-window-item value="Digimon">
+          <DigimonView />
+        </v-tabs-window-item>
+      </v-tabs-window>
+    </v-main>
+
+    <v-footer
+      border
+      color="#7fffd4"
+    >
+    </v-footer>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import DigimonView from './modules/Digimon/DigimonView.vue';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
+    DigimonView
+  },
+  data: () => ({
+    tab: 'Apis'
+  })
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.navbar-title {
+  color:white;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  flex: 1;
 }
 </style>
