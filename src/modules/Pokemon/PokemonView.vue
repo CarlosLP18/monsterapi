@@ -93,6 +93,7 @@ export default {
     return {
       pokemons: [],
       currentPage: 0,
+      index: 0,
 
       loading: false,
       error: null,
@@ -106,17 +107,74 @@ export default {
 
   computed: {
     pokemonCards() {
-      return this.pokemonss.map((pokemon) => ({
+      return this.pokemons.map((pokemon) => ({
         id: pokemon.id,
         name: pokemon.name,
         image: pokemon.image?.href || pokemon.image || null,
         originalData: pokemon
       }))
     }
+  },
+
+  methods: {
+    async loadPokemons() {
+      this.loading = true
+      this.error = null
+
+      try {
+        const data = await PokemonList(this.index)
+
+        this.pokemons = Array.isArray(data.content)
+          ? data.content
+          : []
+        
+        if (typeof data.last === 'boolean') {
+          this.disableNext = data.last
+        } else if (data.pageable?.totalPages) {
+          this.disableNext =
+            this.currentPage >= data.pageable.totalPages - 1
+        } else {
+          this.disableNext = this.pokemons.length === 0
+        }
+      } catch (error) {
+        console.error('Error al cargar Digimon:', error)
+
+        this.error =
+          error.response?.data?.message ||
+          error.message ||
+          'No se pudieron cargar los Pokemon.'
+
+        this.pokemons = []
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async paginaAnterior() {
+      if (this.currentPage === 0 || this.loading) {
+        return
+      }
+
+      this.currentPage--
+      this.index = this.index - 9
+
+      await this.loadPokemons()
+    },
+
+    async paginaSiguiente() {
+      if (this.disableNext || this.loading) {
+        return
+      }
+
+      this.currentPage++
+      this.index = this.index + 9
+
+      await this.loadPokemons()
+    },
+  },
+
+  mounted() {
+    this.loadPokemons()
   }
 }
 </script>
-
-<style lang="">
-    
-</style>

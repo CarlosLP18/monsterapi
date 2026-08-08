@@ -26,7 +26,7 @@
       
       <v-tabs-window v-model="tab">
         <v-tabs-window-item value="Pokemon">
-          <!---->
+          <PokemonView />
         </v-tabs-window-item>
         <v-tabs-window-item value="Digimon">
           <DigimonView />
@@ -44,11 +44,13 @@
 
 <script>
 import DigimonView from './modules/Digimon/DigimonView.vue';
+import PokemonView from './modules/Pokemon/PokemonView.vue';
 
 export default {
   name: 'App',
   components: {
-    DigimonView
+    DigimonView,
+    PokemonView
   },
   data: () => ({
     tab: 'Apis'
