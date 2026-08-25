@@ -26,7 +26,16 @@
     </div>
 
     <template v-else>
-      <SearchFilter></SearchFilter>
+      <v-expansion-panels class="mb-5">
+        <v-expansion-panel>
+          <v-expansion-panel-title>
+            Filters
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <SearchFilter></SearchFilter>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
 
       <ListCard
         :items="pokemonCards"
