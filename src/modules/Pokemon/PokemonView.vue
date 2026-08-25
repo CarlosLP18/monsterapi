@@ -14,6 +14,17 @@
       {{ error }}
     </v-alert>
 
+    <v-expansion-panels class="mb-5">
+      <v-expansion-panel>
+        <v-expansion-panel-title>
+          Filters
+        </v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <SearchFilter @filter-change="handleFilterChange"></SearchFilter>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+    </v-expansion-panels>
+
     <div
       v-if="loading"
       class="d-flex justify-center align-center py-10"
@@ -26,17 +37,6 @@
     </div>
 
     <template v-else>
-      <v-expansion-panels class="mb-5">
-        <v-expansion-panel>
-          <v-expansion-panel-title>
-            Filters
-          </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <SearchFilter></SearchFilter>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels>
-
       <ListCard
         :items="pokemonCards"
         @more-info="openPokemonDetail"
@@ -92,7 +92,12 @@
 <script>
 import SearchFilter from './Components/SearchFilter.vue';
 import ListCard from '@/components/ListCard.vue';
-import { PokemonList } from '@/services/PokemonService';
+import {
+  PokemonList,
+  PokemonDetail,
+  searchType,
+  searchGeneration
+} from '@/services/PokemonService';
 
 export default {
   name: 'PokemonView',
@@ -150,7 +155,7 @@ export default {
           this.disableNext = this.pokemons.length === 0
         }
       } catch (error) {
-        console.error('Error al cargar Digimon:', error)
+        console.error('Error al cargar Pokemon:', error)
 
         this.error =
           error.response?.data?.message ||
@@ -158,6 +163,43 @@ export default {
           'No se pudieron cargar los Pokemon.'
 
         this.pokemons = []
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async handleFilterChange(filters) {
+      this.loading = true
+      this.error = null
+      this.currentPage = 0
+      this.index = 0
+
+      try {
+        let data
+
+        if (filters.name) {
+          const pokemon = await PokemonDetail(filters.name.toLowerCase())
+          data = {
+            content: [pokemon],
+            last: true
+          }
+        } else if (filters.type) {
+          data = await searchType(filters.type)
+        } else if (filters.generation) {
+          data = await searchGeneration(filters.generation)
+        } else {
+          data = await PokemonList(0)
+        }
+
+        this.pokemons = data.content ?? []
+        this.disableNext = data.last ?? true
+      } catch (error) {
+        this.pokemons = []
+        this.disableNext = true
+        this.error =
+          error.response?.data?.message ||
+          error.message ||
+          'No se encontraron Pokémon.'
       } finally {
         this.loading = false
       }

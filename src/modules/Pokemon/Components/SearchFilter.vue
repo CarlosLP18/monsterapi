@@ -8,6 +8,7 @@
         item-title="name"
         item-value="id"
         variant="outlined"
+        @update:model-value="filterByType"
       ></v-select>
     </v-col>
     <v-col>
@@ -18,6 +19,7 @@
         item-title="name"
         item-value="id"
         variant="outlined"
+        @update:model-value="filterByGeneration"
       ></v-select>
     </v-col>
   </v-row>
@@ -27,11 +29,15 @@
         v-model="PokemonName"
         label="Pokemon Name"
         variant="outlined"
+        clearable
+        @keyup.enter="filterByName"
       ></v-text-field>
     </v-col>
   </v-row>
   <v-row>
-    <v-btn>
+    <v-btn
+      @click="clearFilters"
+    >
       Clear
     </v-btn>
   </v-row>
@@ -46,13 +52,50 @@ import {
 export default {
   name: 'SearchFilter',
 
+  emits: ['filter-change'],
+
   data() {
     return {
       selectedType: 0,
       selectedGeneration: 0,
       PokemonType,
       PokemonGeneration,
-      PokemonName: null
+      PokemonName: '',
+    }
+  },
+
+  methods: {
+    emitFilters() {
+      this.$emit('filter-change', {
+        type: this.selectedType,
+        generation: this.selectedGeneration,
+        name: this.PokemonName?.trim() || ''
+      })
+    },
+
+    filterByType() {
+      this.selectedGeneration = 0
+      this.PokemonName = ''
+      this.emitFilters()
+    },
+
+    filterByGeneration() {
+      this.selectedType = 0
+      this.PokemonName = ''
+      this.emitFilters()
+    },
+
+    filterByName() {
+      this.selectedType = 0
+      this.selectedGeneration = 0
+      this.emitFilters()
+    },
+
+    clearFilters() {
+      this.selectedType = 0
+      this.selectedGeneration = 0
+      this.PokemonName = ''
+      this.emitFilters()
     }
   }
 }

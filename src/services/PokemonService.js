@@ -60,11 +60,11 @@ export const searchPokemon = (pokemonName) => {
 export const searchType = async (id) => {
   try {
     const response = await axiosInstances.PokeApi.get(`type/${id}`)
-    const pokemons = response.data.results.pokemon;
+    const pokemons = response.data.pokemon;
 
     const detailed = await Promise.all(
       pokemons.map(async (p) => {
-        const detail = await PokemonDetail(p.name);
+        const detail = await PokemonDetail(p.pokemon.name);
         return {
           id: detail.id,
           name: detail.name,
@@ -85,7 +85,7 @@ export const searchType = async (id) => {
 export const searchGeneration = async (id) => {
   try {
     const response = await axiosInstances.PokeApi.get(`generation/${id}`)
-    const pokemons = response.data.results.pokemon_species;
+    const pokemons = response.data.pokemon_species;
 
     const detailed = await Promise.all(
       pokemons.map(async (p) => {

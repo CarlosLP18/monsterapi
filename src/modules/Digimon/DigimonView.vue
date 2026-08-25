@@ -26,6 +26,17 @@
     </div>
 
     <template v-else>
+      <v-expansion-panels class="mb-5">
+        <v-expansion-panel>
+          <v-expansion-panel-title>
+            Filters
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <SearchFilterD></SearchFilterD>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
+
       <ListCard
         :items="digimonCards"
         @more-info="openDigimonDetail"
@@ -135,6 +146,7 @@
 </template>
 
 <script>
+import SearchFilterD from './Components/SearchFilterD.vue';
 import ListCard from '@/components/ListCard.vue'
 import { DigimonList } from '@/services/DigimonService'
 
@@ -142,6 +154,7 @@ export default {
   name: 'DigimonView',
 
   components: {
+    SearchFilterD,
     ListCard
   },
 
