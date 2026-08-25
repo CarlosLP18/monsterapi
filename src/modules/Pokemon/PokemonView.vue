@@ -26,6 +26,8 @@
     </div>
 
     <template v-else>
+      <SearchFilter></SearchFilter>
+
       <ListCard
         :items="pokemonCards"
         @more-info="openPokemonDetail"
@@ -79,6 +81,7 @@
 </template>
 
 <script>
+import SearchFilter from './Components/SearchFilter.vue';
 import ListCard from '@/components/ListCard.vue';
 import { PokemonList } from '@/services/PokemonService';
 
@@ -86,6 +89,7 @@ export default {
   name: 'PokemonView',
 
   components: {
+    SearchFilter,
     ListCard
   },
 

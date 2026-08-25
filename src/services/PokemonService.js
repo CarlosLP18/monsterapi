@@ -56,3 +56,53 @@ export const searchPokemon = (pokemonName) => {
         throw new Error('Error al buscar el Pókemon: ' + error);
     });
 }
+
+export const searchType = async (id) => {
+  try {
+    const response = await axiosInstances.PokeApi.get(`type/${id}`)
+    const pokemons = response.data.results.pokemon;
+
+    const detailed = await Promise.all(
+      pokemons.map(async (p) => {
+        const detail = await PokemonDetail(p.name);
+        return {
+          id: detail.id,
+          name: detail.name,
+          image: detail.image
+        };
+      })
+    );
+
+    return {
+      content: detailed,
+      last: detailed.length < 9 // si trae menos de 9, no hay siguiente página
+    };
+  } catch (error) {
+    throw new Error('Error en listar los Pokémon');
+  }
+}
+
+export const searchGeneration = async (id) => {
+  try {
+    const response = await axiosInstances.PokeApi.get(`generation/${id}`)
+    const pokemons = response.data.results.pokemon_species;
+
+    const detailed = await Promise.all(
+      pokemons.map(async (p) => {
+        const detail = await PokemonDetail(p.name);
+        return {
+          id: detail.id,
+          name: detail.name,
+          image: detail.image
+        };
+      })
+    );
+
+    return {
+      content: detailed,
+      last: detailed.length < 9 // si trae menos de 9, no hay siguiente página
+    };
+  } catch (error) {
+    throw new Error('Error en listar los Pokémon');
+  }
+}
